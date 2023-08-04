@@ -1,10 +1,11 @@
 package freitas.abner.expenses.domain.income;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public record CreateIncomeData(
         String description,
-        Long value,
+        BigDecimal amount,
         Date datetime
 ) {
 }

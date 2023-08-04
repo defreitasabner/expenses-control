@@ -1,9 +1,9 @@
 package freitas.abner.expenses.controllers;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import freitas.abner.expenses.domain.income.Income;
+import freitas.abner.expenses.domain.income.IncomeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import freitas.abner.expenses.domain.income.CreateIncomeData;
 
@@ -11,8 +11,11 @@ import freitas.abner.expenses.domain.income.CreateIncomeData;
 @RequestMapping("ganhos")
 public class IncomeController {
 
-    @PostMapping
-    public void createIncome(@RequestBody CreateIncomeData IncomeDto) {
+    @Autowired
+    private IncomeRepository repository;
 
+    @PostMapping
+    public void createIncome(@RequestBody CreateIncomeData incomeDto) {
+        repository.save(new Income(incomeDto));
     }
 }
