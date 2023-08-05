@@ -47,4 +47,10 @@ public class Income {
     public LocalDateTime getDatetime() {
         return datetime;
     }
+
+    public void update(UpdateIncomeData incomeDto) {
+        if(incomeDto.description() != null) this.description = incomeDto.description();
+        if(incomeDto.amount() != null) this.amount = incomeDto.amount();
+        if(incomeDto.datetime() != null) this.datetime = incomeDto.datetime();
+    }
 }

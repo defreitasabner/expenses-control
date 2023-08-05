@@ -1,16 +1,13 @@
 package freitas.abner.expenses.controllers;
 
-import freitas.abner.expenses.domain.income.Income;
-import freitas.abner.expenses.domain.income.IncomeRepository;
-import freitas.abner.expenses.domain.income.ReadIncomeData;
+import freitas.abner.expenses.domain.income.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-
-import freitas.abner.expenses.domain.income.CreateIncomeData;
 
 import java.util.List;
 
@@ -22,6 +19,7 @@ public class IncomeController {
     private IncomeRepository repository;
 
     @PostMapping
+    @Transactional
     public void createIncome(@RequestBody @Valid CreateIncomeData incomeDto) {
         repository.save(new Income(incomeDto));
     }
@@ -31,5 +29,12 @@ public class IncomeController {
             @PageableDefault(size = 10, page = 0, sort = {"datetime"}) Pageable pageable
     ) {
         return repository.findAll(pageable).map(ReadIncomeData::new);
+    }
+
+    @PutMapping
+    @Transactional
+    public void updateIncome(@RequestBody @Valid UpdateIncomeData incomeDto) {
+        var income = repository.getReferenceById(incomeDto.id());
+        income.update(incomeDto);
     }
 }
