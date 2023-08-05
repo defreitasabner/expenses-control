@@ -4,6 +4,9 @@ import freitas.abner.expenses.domain.income.Income;
 import freitas.abner.expenses.domain.income.IncomeRepository;
 import freitas.abner.expenses.domain.income.ReadIncomeData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -24,7 +27,9 @@ public class IncomeController {
     }
 
     @GetMapping
-    public List<ReadIncomeData> getIncomes() {
-        return repository.findAll().stream().map(ReadIncomeData::new).toList();
+    public Page<ReadIncomeData> getIncomes(
+            @PageableDefault(size = 10, page = 0, sort = {"datetime"}) Pageable pageable
+    ) {
+        return repository.findAll(pageable).map(ReadIncomeData::new);
     }
 }
