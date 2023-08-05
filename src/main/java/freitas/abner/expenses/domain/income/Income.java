@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Table(name = "Incomes")
@@ -14,9 +15,11 @@ public class Income {
     private Long id;
     private String description;
     private BigDecimal amount;
-    private Date datetime;
+    private LocalDateTime datetime;
 
-    public Income(Long id, String description, BigDecimal amount, Date datetime) {
+    public Income() {}
+
+    public Income(Long id, String description, BigDecimal amount, LocalDateTime datetime) {
         this.id = id;
         this.description = description;
         this.amount = amount;
@@ -41,7 +44,7 @@ public class Income {
         return amount;
     }
 
-    public Date getDatetime() {
+    public LocalDateTime getDatetime() {
         return datetime;
     }
 }
