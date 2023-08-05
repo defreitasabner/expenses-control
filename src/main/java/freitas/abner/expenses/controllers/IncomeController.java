@@ -37,4 +37,10 @@ public class IncomeController {
         var income = repository.getReferenceById(incomeDto.id());
         income.update(incomeDto);
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void deleteIncome(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
 }
