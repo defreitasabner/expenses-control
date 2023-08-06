@@ -56,7 +56,7 @@ public class IncomeController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity deleteIncome(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteIncome(@PathVariable Long id) {
         var income = repository.getReferenceById(id);
         repository.delete(income);
         return ResponseEntity.noContent().build();
