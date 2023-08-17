@@ -58,9 +58,8 @@ public class IncomeController {
     public ResponseEntity<ReadIncomeData> updateIncome(
             @PathVariable Long id,
             @RequestBody @Valid UpdateIncomeData incomeDto
-    ) {
-        var income = repository.getReferenceById(id);
-        income.update(incomeDto);
+    ) throws SameDescriptionException {
+        var income = service.updateIncome(id, incomeDto);
         return ResponseEntity.ok(new ReadIncomeData(income));
     }
 

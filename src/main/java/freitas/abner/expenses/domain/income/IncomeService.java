@@ -19,9 +19,16 @@ public class IncomeService {
     public Income registerNewIncome(CreateIncomeData incomeDto) throws SameDescriptionException {
         var income = new Income(incomeDto);
         var monthIncomes = getAllMonthIncomes(income.getDatetime());
-        if(monthIncomes.stream().anyMatch(monthIncome -> monthIncome.getDescription().equals(income.getDescription())))
-            throw new SameDescriptionException();
+        verifyDescription(income.getDescription(), monthIncomes);
         repository.save(income);
+        return income;
+    }
+
+    public Income updateIncome(Long id, UpdateIncomeData incomeDto) throws SameDescriptionException{
+        var income = repository.getReferenceById(id);
+        var monthIncomes = getAllMonthIncomes(income.getDatetime());
+        verifyDescription(incomeDto.description(), monthIncomes);
+        income.update(incomeDto);
         return income;
     }
 
@@ -35,5 +42,10 @@ public class IncomeService {
         );
         var lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth());
         return repository.findAllByDatetimeBetween(firstDay, lastDay);
+    }
+
+    private void verifyDescription(String description, List<Income> monthIncomes) throws SameDescriptionException{
+        if(monthIncomes.stream().anyMatch(monthIncome -> monthIncome.getDescription().equals(description)))
+            throw new SameDescriptionException();
     }
 }
