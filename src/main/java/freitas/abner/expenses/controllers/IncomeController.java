@@ -25,25 +25,16 @@ public class IncomeController {
     @Autowired
     private IncomeRepository repository;
 
+    @Autowired
+    private IncomeService service;
+
     @PostMapping
     @Transactional
     public ResponseEntity<ReadIncomeData> createIncome(
             @RequestBody @Valid CreateIncomeData incomeDto,
             UriComponentsBuilder uriBuilder
     ) throws SameDescriptionException {
-        var income = new Income(incomeDto);
-        var firstDay = LocalDateTime.of(
-                LocalDate.of(
-                    income.getDatetime().getYear(),
-                    income.getDatetime().getMonth(),
-                    1),
-                LocalTime.of(0, 0, 0)
-        );
-        var lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth());
-        var monthIncomes = repository.findAllByDatetimeBetween(firstDay, lastDay);
-        if(monthIncomes.stream().anyMatch(monthIncome -> monthIncome.getDescription().equals(income.getDescription())))
-            throw new SameDescriptionException();
-        repository.save(income);
+        var income = service.registerNewIncome(incomeDto);
         var uri = uriBuilder.path("/incomes/{id}").buildAndExpand(income.getId()).toUri();
         return ResponseEntity.created(uri).body(new ReadIncomeData(income));
     }
