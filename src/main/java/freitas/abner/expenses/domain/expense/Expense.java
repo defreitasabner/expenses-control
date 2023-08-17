@@ -46,4 +46,10 @@ public class Expense {
     public LocalDateTime getDatetime() {
         return datetime;
     }
+
+    public void update(UpdateExpenseData expenseDto) {
+        if(expenseDto.amount() != null) this.amount = expenseDto.amount();
+        if(expenseDto.description() != null) this.description = expenseDto.description();
+        if(expenseDto.datetime() != null) this.datetime = expenseDto.datetime();
+    }
 }
