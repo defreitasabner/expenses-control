@@ -23,9 +23,6 @@ import java.util.Calendar;
 public class IncomeController {
 
     @Autowired
-    private IncomeRepository repository;
-
-    @Autowired
     private IncomeService service;
 
     @PostMapping
@@ -43,14 +40,14 @@ public class IncomeController {
     public ResponseEntity<Page<ReadIncomeData>> getIncomes(
             @PageableDefault(size = 10, page = 0, sort = {"datetime"}) Pageable pageable
     ) {
-        var page = repository.findAll(pageable).map(ReadIncomeData::new);
+        var page = service.getAllIncomeDataPageable(pageable);
         return ResponseEntity.ok(page);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReadIncomeData> getIncome(@PathVariable Long id) {
-        var income = repository.getReferenceById(id);
-        return ResponseEntity.ok(new ReadIncomeData(income));
+        var incomeDto = service.getIncomeDetail(id);
+        return ResponseEntity.ok(incomeDto);
     }
 
     @PutMapping("/{id}")
@@ -66,8 +63,7 @@ public class IncomeController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> deleteIncome(@PathVariable Long id) {
-        var income = repository.getReferenceById(id);
-        repository.delete(income);
+        service.deleteIncome(id);
         return ResponseEntity.noContent().build();
     }
 }

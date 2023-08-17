@@ -2,7 +2,9 @@ package freitas.abner.expenses.domain.income;
 
 import freitas.abner.expenses.exceptions.SameDescriptionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,12 +26,26 @@ public class IncomeService {
         return income;
     }
 
+    public Page<ReadIncomeData> getAllIncomeDataPageable(Pageable pageable) {
+        return repository.findAll(pageable).map(ReadIncomeData::new);
+    }
+
+    public ReadIncomeData getIncomeDetail(Long id) {
+        var income = repository.getReferenceById(id);
+        return new ReadIncomeData(income);
+    }
+
     public Income updateIncome(Long id, UpdateIncomeData incomeDto) throws SameDescriptionException{
         var income = repository.getReferenceById(id);
         var monthIncomes = getAllMonthIncomes(income.getDatetime());
         verifyDescription(incomeDto.description(), monthIncomes);
         income.update(incomeDto);
         return income;
+    }
+
+    public void deleteIncome(Long id) {
+        var income = repository.getReferenceById(id);
+        repository.delete(income);
     }
 
     private List<Income> getAllMonthIncomes(LocalDateTime dateTime) {
