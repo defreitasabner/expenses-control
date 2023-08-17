@@ -46,10 +46,13 @@ public class IncomeController {
         return ResponseEntity.ok(new ReadIncomeData(income));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<ReadIncomeData> updateIncome(@RequestBody @Valid UpdateIncomeData incomeDto) {
-        var income = repository.getReferenceById(incomeDto.id());
+    public ResponseEntity<ReadIncomeData> updateIncome(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateIncomeData incomeDto
+    ) {
+        var income = repository.getReferenceById(id);
         income.update(incomeDto);
         return ResponseEntity.ok(new ReadIncomeData(income));
     }
