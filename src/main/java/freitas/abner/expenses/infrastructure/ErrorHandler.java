@@ -1,5 +1,6 @@
 package freitas.abner.expenses.infrastructure;
 
+import freitas.abner.expenses.exceptions.SameDescriptionException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,6 +28,11 @@ public class ErrorHandler {
         public ValidationErrorData(FieldError error) {
             this(error.getField(), error.getDefaultMessage());
         }
+    }
+
+    @ExceptionHandler(SameDescriptionException.class)
+    public ResponseEntity sameDescriptionException() {
+        return ResponseEntity.badRequest().build();
     }
 
 }

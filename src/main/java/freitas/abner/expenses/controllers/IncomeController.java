@@ -1,6 +1,7 @@
 package freitas.abner.expenses.controllers;
 
 import freitas.abner.expenses.domain.income.*;
+import freitas.abner.expenses.exceptions.SameDescriptionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 
 @RestController
 @RequestMapping("incomes")
@@ -25,8 +30,19 @@ public class IncomeController {
     public ResponseEntity<ReadIncomeData> createIncome(
             @RequestBody @Valid CreateIncomeData incomeDto,
             UriComponentsBuilder uriBuilder
-    ) {
+    ) throws SameDescriptionException {
         var income = new Income(incomeDto);
+        var firstDay = LocalDateTime.of(
+                LocalDate.of(
+                    income.getDatetime().getYear(),
+                    income.getDatetime().getMonth(),
+                    1),
+                LocalTime.of(0, 0, 0)
+        );
+        var lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth());
+        var monthIncomes = repository.findAllByDatetimeBetween(firstDay, lastDay);
+        if(monthIncomes.stream().anyMatch(monthIncome -> monthIncome.getDescription().equals(income.getDescription())))
+            throw new SameDescriptionException();
         repository.save(income);
         var uri = uriBuilder.path("/incomes/{id}").buildAndExpand(income.getId()).toUri();
         return ResponseEntity.created(uri).body(new ReadIncomeData(income));
