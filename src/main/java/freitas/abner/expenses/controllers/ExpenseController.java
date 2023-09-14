@@ -3,6 +3,7 @@ package freitas.abner.expenses.controllers;
 import freitas.abner.expenses.domain.expense.CreateExpenseData;
 import freitas.abner.expenses.domain.expense.ReadExpenseData;
 import freitas.abner.expenses.domain.expense.UpdateExpenseData;
+import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
 import freitas.abner.expenses.services.ExpenseService;
 import jakarta.validation.Valid;
@@ -26,7 +27,8 @@ public class ExpenseController {
     public ResponseEntity<ReadExpenseData> createExpense(
             @RequestBody @Valid CreateExpenseData expenseDto,
             UriComponentsBuilder uriBuilder
-    ) throws SameDescriptionException {
+    ) throws SameDescriptionException, InvalidCategoryException
+    {
         var expense = service.registerNewExpense(expenseDto);
         var uri = uriBuilder.path("/expenses/{id}").buildAndExpand(expense.getId()).toUri();
         return ResponseEntity.created(uri).body(new ReadExpenseData(expense));

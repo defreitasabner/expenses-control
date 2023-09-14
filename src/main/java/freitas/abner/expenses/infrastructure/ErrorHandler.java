@@ -1,5 +1,6 @@
 package freitas.abner.expenses.infrastructure;
 
+import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,11 @@ public class ErrorHandler {
 
     @ExceptionHandler(SameDescriptionException.class)
     public ResponseEntity sameDescriptionException() {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(InvalidCategoryException.class)
+    public ResponseEntity invalidCategoryException() {
         return ResponseEntity.badRequest().build();
     }
 

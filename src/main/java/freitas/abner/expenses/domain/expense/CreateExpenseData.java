@@ -12,5 +12,7 @@ public record CreateExpenseData(
     @NotNull
     BigDecimal amount,
     @NotNull
-    LocalDateTime datetime
+    LocalDateTime datetime,
+    @NotNull
+    Long categoryId
 ) { }
