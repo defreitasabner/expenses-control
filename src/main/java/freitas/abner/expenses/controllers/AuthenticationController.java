@@ -1,6 +1,9 @@
 package freitas.abner.expenses.controllers;
 
 import freitas.abner.expenses.domain.user.AuthenticationData;
+import freitas.abner.expenses.domain.user.User;
+import freitas.abner.expenses.infrastructure.security.JwtTokenData;
+import freitas.abner.expenses.infrastructure.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +21,15 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authManager;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping
-    public ResponseEntity<Void> login(@RequestBody @Valid AuthenticationData authData) {
-        var token = new UsernamePasswordAuthenticationToken(authData.username(), authData.password());
-        var authentication = authManager.authenticate(token);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<JwtTokenData> login(@RequestBody @Valid AuthenticationData authData) {
+        var authenticationToken = new UsernamePasswordAuthenticationToken(authData.username(), authData.password());
+        var authentication = authManager.authenticate(authenticationToken);
+        var jwtToken = tokenService.generateToken((User) authentication.getPrincipal());
+        return ResponseEntity.ok(new JwtTokenData(jwtToken));
     }
 
 }
