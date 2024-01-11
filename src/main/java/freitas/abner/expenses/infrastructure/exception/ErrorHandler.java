@@ -1,4 +1,4 @@
-package freitas.abner.expenses.infrastructure;
+package freitas.abner.expenses.infrastructure.exception;
 
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
