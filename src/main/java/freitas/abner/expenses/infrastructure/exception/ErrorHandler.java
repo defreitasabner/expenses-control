@@ -2,6 +2,7 @@ package freitas.abner.expenses.infrastructure.exception;
 
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
+import freitas.abner.expenses.exceptions.ValidationException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -39,6 +40,12 @@ public class ErrorHandler {
     @ExceptionHandler(InvalidCategoryException.class)
     public ResponseEntity invalidCategoryException() {
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ValidationExceptionData> validationException(ValidationException ex) {
+        var exceptionDto = new ValidationExceptionData(ex);
+        return ResponseEntity.badRequest().body(exceptionDto);
     }
 
 }

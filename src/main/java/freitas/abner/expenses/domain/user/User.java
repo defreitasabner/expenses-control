@@ -1,6 +1,7 @@
 package freitas.abner.expenses.domain.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +22,12 @@ public class User implements UserDetails {
     private String password;
 
     public User() {}
+
+    public User(String username, String email, String encodedPassword) {
+        this.username = username;
+        this.email = email;
+        this.password = encodedPassword;
+    }
 
     public User(Long id, String username, String email, String password) {
         this.id = id;
