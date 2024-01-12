@@ -1,4 +1,4 @@
-package freitas.abner.expenses.services;
+package freitas.abner.expenses.domain.user;
 
 import freitas.abner.expenses.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

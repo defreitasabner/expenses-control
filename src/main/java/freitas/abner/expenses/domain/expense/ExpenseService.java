@@ -1,5 +1,6 @@
-package freitas.abner.expenses.services;
+package freitas.abner.expenses.domain.expense;
 
+import freitas.abner.expenses.domain.category.CategoryService;
 import freitas.abner.expenses.domain.expense.*;
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;

@@ -5,7 +5,7 @@ import freitas.abner.expenses.domain.expense.ReadExpenseData;
 import freitas.abner.expenses.domain.expense.UpdateExpenseData;
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
-import freitas.abner.expenses.services.ExpenseService;
+import freitas.abner.expenses.domain.expense.ExpenseService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

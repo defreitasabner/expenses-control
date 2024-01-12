@@ -1,4 +1,4 @@
-package freitas.abner.expenses.services;
+package freitas.abner.expenses.domain.category;
 
 import freitas.abner.expenses.domain.category.Category;
 import freitas.abner.expenses.domain.category.CategoryRepository;
@@ -11,7 +11,7 @@ public class CategoryService {
     @Autowired
     CategoryRepository repository;
 
-    Category getCategoryById(Long id) {
+    public Category getCategoryById(Long id) {
         return repository.getReferenceById(id);
     }
 
