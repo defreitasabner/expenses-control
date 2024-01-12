@@ -2,6 +2,7 @@ package freitas.abner.expenses.controllers;
 
 import freitas.abner.expenses.domain.income.*;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import java.util.Calendar;
 
 @RestController
 @RequestMapping("incomes")
+@SecurityRequirement(name = "bearer-key")
 public class IncomeController {
 
     @Autowired

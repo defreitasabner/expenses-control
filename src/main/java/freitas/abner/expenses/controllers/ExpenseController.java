@@ -6,6 +6,7 @@ import freitas.abner.expenses.domain.expense.UpdateExpenseData;
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
 import freitas.abner.expenses.services.ExpenseService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("expenses")
+@SecurityRequirement(name = "bearer-key")
 public class ExpenseController {
     @Autowired
     ExpenseService service;
