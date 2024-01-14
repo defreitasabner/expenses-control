@@ -1,11 +1,38 @@
+version: "3.8"
+
 services:
-  db:
+
+  mysql-db:
+    container_name: mysql-db
     image: mysql
     restart: always
+    env_file: ./.env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: financial
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     expose:
       - 3306
     ports:
       - 3306:3306
+    networks:
+      - backend-bridge
+
+  expenses-api:
+    container_name: expenses-api
+    build:
+      context: ./
+      dockerfile: DockerFile
+    command: ["java", "-jar", "expenses-0.0.1-SNAPSHOT.jar"]
+    depends_on:
+      - mysql-db
+    restart: always
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    networks:
+      - backend-bridge
+
+networks:
+  backend-bridge:
+    driver: bridge
