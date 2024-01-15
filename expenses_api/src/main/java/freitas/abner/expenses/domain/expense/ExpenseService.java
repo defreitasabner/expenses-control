@@ -4,7 +4,6 @@ import freitas.abner.expenses.domain.category.CategoryService;
 import freitas.abner.expenses.domain.user.User;
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +39,11 @@ public class ExpenseService {
         return repository.findAllByUserId(user.getId(), pageable).map(ReadExpenseData::new);
     }
 
-    public ReadExpenseData getExpenseDetail(Long id) {
+    public ReadExpenseData getExpenseDetail(Long id, User user) {
         var expense = repository.getReferenceById(id);
+        if(expense.getUser().getId() != user.getId()) {
+            throw new RuntimeException("You couldn't check another user expenses.");
+        }
         return new ReadExpenseData(expense);
     }
 
@@ -57,8 +59,14 @@ public class ExpenseService {
         return new ReadExpenseData(expense);
     }
 
-    public void deleteExpense(Long id) {
-        var expense = repository.getReferenceById(id);
+    public void deleteExpense(DeleteExpenseData deleteExpenseData, User user) {
+        var expense = repository.findByDescriptionAndUserId(
+                deleteExpenseData.description(),
+                user.getId()
+        );
+        if (expense == null) {
+            throw new RuntimeException("Expense not found.");
+        }
         repository.delete(expense);
     }
 
