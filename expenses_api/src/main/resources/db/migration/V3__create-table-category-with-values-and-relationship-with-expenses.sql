@@ -5,17 +5,6 @@ CREATE TABLE categories(
     PRIMARY KEY(id)
 );
 
-INSERT INTO categories(name)
-    VALUES
-        ("Alimentação"),
-        ("Saúde"),
-        ("Moradia"),
-        ("Transporte"),
-        ("Educação"),
-        ("Lazer"),
-        ("Imprevisto"),
-        ("Outros");
-
 ALTER TABLE expenses
     ADD COLUMN category_id BIGINT NOT NULL;
 
