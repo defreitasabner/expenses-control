@@ -33,18 +33,20 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler(SameDescriptionException.class)
-    public ResponseEntity sameDescriptionException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<ExceptionDetailData> sameDescriptionException(SameDescriptionException ex) {
+        var exceptionDto = new ExceptionDetailData(ex);
+        return ResponseEntity.badRequest().body(exceptionDto);
     }
 
     @ExceptionHandler(InvalidCategoryException.class)
-    public ResponseEntity invalidCategoryException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<ExceptionDetailData> invalidCategoryException(InvalidCategoryException ex) {
+        var exceptionDto = new ExceptionDetailData(ex);
+        return ResponseEntity.badRequest().body(exceptionDto);
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ValidationExceptionData> validationException(ValidationException ex) {
-        var exceptionDto = new ValidationExceptionData(ex);
+    public ResponseEntity<ExceptionDetailData> validationException(ValidationException ex) {
+        var exceptionDto = new ExceptionDetailData(ex);
         return ResponseEntity.badRequest().body(exceptionDto);
     }
 
