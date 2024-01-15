@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+
+  mysql-db:
+    container_name: mysql-db
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+    volumes:
+      - ./base.sql:/docker-entrypoint-initdb.d/base.sql
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    networks:
+      - backend-bridge
+
+networks:
+  backend-bridge:
+    driver: bridge

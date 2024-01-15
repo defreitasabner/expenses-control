@@ -6,7 +6,7 @@ services:
     container_name: mysql-db
     image: mysql
     restart: always
-    env_file: ./.env
+    env_file: ../environment/db.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -20,9 +20,15 @@ services:
   expenses-api:
     container_name: expenses-api
     build:
-      context: ./
+      context: ../image/
       dockerfile: DockerFile
     command: ["java", "-jar", "expenses-0.0.1-SNAPSHOT.jar"]
+    env_file: ../environment/spring.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
     depends_on:
       - mysql-db
     restart: always
