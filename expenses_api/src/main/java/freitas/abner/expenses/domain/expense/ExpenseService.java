@@ -1,6 +1,7 @@
 package freitas.abner.expenses.domain.expense;
 
 import freitas.abner.expenses.domain.category.CategoryService;
+import freitas.abner.expenses.domain.expense.validators.ExpenseValidator;
 import freitas.abner.expenses.domain.user.User;
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
@@ -23,14 +24,14 @@ public class ExpenseService {
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    List<ExpenseValidator> validators;
+
     public Expense registerNewExpense(CreateExpenseData expenseDto, User user)
-            throws SameDescriptionException, InvalidCategoryException
     {
+        validators.forEach(validator -> validator.validate(expenseDto, user));
         var category = categoryService.getCategoryById(expenseDto.categoryId());
-        if(category == null) throw new InvalidCategoryException();
         var expense = new Expense(expenseDto, category, user);
-        var monthExpenses = getAllMonthExpenses(expenseDto.datetime(), user);
-        verifyDescription(expense.getDescription(), monthExpenses);
         repository.save(expense);
         return expense;
     }
@@ -41,7 +42,7 @@ public class ExpenseService {
 
     public ReadExpenseData getExpenseDetail(Long id, User user) {
         var expense = repository.getReferenceById(id);
-        if(expense.getUser().getId() != user.getId()) {
+        if(!expense.getUser().getId().equals(user.getId())) {
             throw new RuntimeException("You couldn't check another user expenses.");
         }
         return new ReadExpenseData(expense);
@@ -84,6 +85,6 @@ public class ExpenseService {
 
     private void verifyDescription(String description, List<Expense> monthExpenses) throws SameDescriptionException {
         if(monthExpenses.stream().anyMatch(monthExpense -> monthExpense.getDescription().equals(description)))
-            throw new SameDescriptionException();
+            throw new SameDescriptionException("");
     }
 }

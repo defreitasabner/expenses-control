@@ -62,6 +62,6 @@ public class IncomeService {
 
     private void verifyDescription(String description, List<Income> monthIncomes) throws SameDescriptionException{
         if(monthIncomes.stream().anyMatch(monthIncome -> monthIncome.getDescription().equals(description)))
-            throw new SameDescriptionException();
+            throw new SameDescriptionException("");
     }
 }
