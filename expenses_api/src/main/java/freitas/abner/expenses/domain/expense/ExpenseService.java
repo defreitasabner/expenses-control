@@ -4,6 +4,7 @@ import freitas.abner.expenses.domain.category.CategoryService;
 import freitas.abner.expenses.domain.user.User;
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,8 +36,8 @@ public class ExpenseService {
         return expense;
     }
 
-    public Page<ReadExpenseData> getAllExpenseDataPageable(Pageable pageable) {
-        return repository.findAll(pageable).map(ReadExpenseData::new);
+    public Page<ReadExpenseData> getAllExpenseDataPageable(Pageable pageable, User user) {
+        return repository.findAllByUserId(user.getId(), pageable).map(ReadExpenseData::new);
     }
 
     public ReadExpenseData getExpenseDetail(Long id) {
@@ -44,8 +45,11 @@ public class ExpenseService {
         return new ReadExpenseData(expense);
     }
 
-    public ReadExpenseData updateExpense(Long id, UpdateExpenseData updateDto) throws SameDescriptionException {
-        var expense = repository.getReferenceById(id);
+    public ReadExpenseData updateExpense(UpdateExpenseData updateDto, User user) throws SameDescriptionException {
+        var expense = repository.findByDescriptionAndUserId(updateDto.description(), user.getId());
+        if(expense == null) {
+            throw new RuntimeException("Expense not found.");
+        }
         var monthExpense = getAllMonthExpenses(expense.getDatetime(), expense.getUser());
         if(updateDto.description() != null)
             verifyDescription(updateDto.description(), monthExpense);

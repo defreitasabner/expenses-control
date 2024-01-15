@@ -43,7 +43,8 @@ public class ExpenseController {
     public ResponseEntity<Page<ReadExpenseData>> getExpenses(
             @PageableDefault(size = 10, page = 0, sort = {"datetime"})Pageable pageable
     ) {
-        var page = service.getAllExpenseDataPageable(pageable);
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var page = service.getAllExpenseDataPageable(pageable, user);
         return ResponseEntity.ok(page);
     }
 
@@ -53,12 +54,12 @@ public class ExpenseController {
         return ResponseEntity.ok(expenseDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<ReadExpenseData> updateExpense(
-            @PathVariable Long id,
             @RequestBody @Valid UpdateExpenseData expenseDto
     ) throws SameDescriptionException {
-        var expense = service.updateExpense(id, expenseDto);
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var expense = service.updateExpense(expenseDto, user);
         return ResponseEntity.ok(expense);
     }
 
