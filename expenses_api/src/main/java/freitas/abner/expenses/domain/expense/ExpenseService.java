@@ -1,7 +1,7 @@
 package freitas.abner.expenses.domain.expense;
 
 import freitas.abner.expenses.domain.category.CategoryService;
-import freitas.abner.expenses.domain.expense.*;
+import freitas.abner.expenses.domain.user.User;
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ public class ExpenseService {
     @Autowired
     CategoryService categoryService;
 
-    public Expense registerNewExpense(CreateExpenseData expenseDto)
+    public Expense registerNewExpense(CreateExpenseData expenseDto, User user)
             throws SameDescriptionException, InvalidCategoryException
     {
         var category = categoryService.getCategoryById(expenseDto.categoryId());
         if(category == null) throw new InvalidCategoryException();
-        var expense = new Expense(expenseDto, category);
-        var monthExpenses = getAllMonthExpenses(expenseDto.datetime());
+        var expense = new Expense(expenseDto, category, user);
+        var monthExpenses = getAllMonthExpenses(expenseDto.datetime(), user);
         verifyDescription(expense.getDescription(), monthExpenses);
         repository.save(expense);
         return expense;
@@ -46,7 +46,7 @@ public class ExpenseService {
 
     public ReadExpenseData updateExpense(Long id, UpdateExpenseData updateDto) throws SameDescriptionException {
         var expense = repository.getReferenceById(id);
-        var monthExpense = getAllMonthExpenses(expense.getDatetime());
+        var monthExpense = getAllMonthExpenses(expense.getDatetime(), expense.getUser());
         if(updateDto.description() != null)
             verifyDescription(updateDto.description(), monthExpense);
         expense.update(updateDto);
@@ -58,7 +58,7 @@ public class ExpenseService {
         repository.delete(expense);
     }
 
-    private List<Expense> getAllMonthExpenses(LocalDateTime dateTime) {
+    private List<Expense> getAllMonthExpenses(LocalDateTime dateTime, User user) {
         var firstDay = LocalDateTime.of(
                 LocalDate.of(
                         dateTime.getYear(),
@@ -67,7 +67,7 @@ public class ExpenseService {
                 LocalTime.of(0, 0, 0)
         );
         var lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth());
-        return repository.findAllByDatetimeBetween(firstDay, lastDay);
+        return repository.findAllByDatetimeBetweenAndUserId(firstDay, lastDay, user.getId());
     }
 
     private void verifyDescription(String description, List<Expense> monthExpenses) throws SameDescriptionException {

@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
-    List<Expense> findAllByDatetimeBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<Expense> findAllByDatetimeBetweenAndUserId(LocalDateTime startDateTime, LocalDateTime endDateTime, Long userId);
 }

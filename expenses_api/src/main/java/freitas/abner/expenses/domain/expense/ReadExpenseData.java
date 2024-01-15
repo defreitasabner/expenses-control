@@ -1,6 +1,7 @@
 package freitas.abner.expenses.domain.expense;
 
 import freitas.abner.expenses.domain.category.ReadCategoryData;
+import freitas.abner.expenses.domain.user.ReadUserData;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,7 +11,8 @@ public record ReadExpenseData(
         String description,
         BigDecimal amount,
         LocalDateTime datetime,
-        ReadCategoryData category
+        ReadCategoryData category,
+        ReadUserData user
 ) {
     public ReadExpenseData(Expense expense) {
         this(
@@ -18,7 +20,8 @@ public record ReadExpenseData(
                 expense.getDescription(),
                 expense.getAmount(),
                 expense.getDatetime(),
-                new ReadCategoryData(expense.getCategory())
+                new ReadCategoryData(expense.getCategory()),
+                new ReadUserData(expense.getUser())
         );
     }
 }

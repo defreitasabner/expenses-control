@@ -1,6 +1,7 @@
 package freitas.abner.expenses.domain.expense;
 
 import freitas.abner.expenses.domain.category.Category;
+import freitas.abner.expenses.domain.user.User;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 
@@ -19,6 +20,9 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     public Expense() {}
 
@@ -27,20 +31,23 @@ public class Expense {
             String description,
             BigDecimal amount,
             LocalDateTime datetime,
-            Category category
+            Category category,
+            User user
     ) {
         this.id = id;
         this.description = description;
         this.amount = amount;
         this.datetime = datetime;
         this.category = category;
+        this.user = user;
     }
 
-    public Expense(CreateExpenseData expenseDto, Category category) {
+    public Expense(CreateExpenseData expenseDto, Category category, User user) {
         this.description = expenseDto.description();
         this.amount = expenseDto.amount();
         this.datetime = expenseDto.datetime();
         this.category = category;
+        this.user = user;
     }
 
     public Long getId() {
@@ -61,6 +68,10 @@ public class Expense {
 
     public Category getCategory() {
         return category;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void update(UpdateExpenseData expenseDto) {

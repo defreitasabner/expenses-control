@@ -3,6 +3,7 @@ package freitas.abner.expenses.controllers;
 import freitas.abner.expenses.domain.expense.CreateExpenseData;
 import freitas.abner.expenses.domain.expense.ReadExpenseData;
 import freitas.abner.expenses.domain.expense.UpdateExpenseData;
+import freitas.abner.expenses.domain.user.User;
 import freitas.abner.expenses.exceptions.InvalidCategoryException;
 import freitas.abner.expenses.exceptions.SameDescriptionException;
 import freitas.abner.expenses.domain.expense.ExpenseService;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,7 +33,8 @@ public class ExpenseController {
             UriComponentsBuilder uriBuilder
     ) throws SameDescriptionException, InvalidCategoryException
     {
-        var expense = service.registerNewExpense(expenseDto);
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var expense = service.registerNewExpense(expenseDto, user);
         var uri = uriBuilder.path("/expenses/{id}").buildAndExpand(expense.getId()).toUri();
         return ResponseEntity.created(uri).body(new ReadExpenseData(expense));
     }

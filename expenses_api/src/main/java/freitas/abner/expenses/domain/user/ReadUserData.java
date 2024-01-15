@@ -1,11 +1,11 @@
 package freitas.abner.expenses.domain.user;
 
-public record UserDetailData(
+public record ReadUserData(
         Long id,
         String username,
         String email
 ) {
-    public UserDetailData(User user) {
+    public ReadUserData(User user) {
         this(
                 user.getId(),
                 user.getUsername(),
