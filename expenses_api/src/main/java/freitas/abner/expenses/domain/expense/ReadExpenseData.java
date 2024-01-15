@@ -1,6 +1,6 @@
 package freitas.abner.expenses.domain.expense;
 
-import freitas.abner.expenses.domain.category.ReadCategoryData;
+import freitas.abner.expenses.domain.category.dtos.ReadCategoryData;
 import freitas.abner.expenses.domain.user.ReadUserData;
 
 import java.math.BigDecimal;

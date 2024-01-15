@@ -1,9 +1,9 @@
 package freitas.abner.expenses.controllers;
 
-import freitas.abner.expenses.domain.category.CategoryRepository;
-import freitas.abner.expenses.domain.category.CategoryService;
-import freitas.abner.expenses.domain.category.CreateCategoryData;
-import freitas.abner.expenses.domain.category.ReadCategoryData;
+import freitas.abner.expenses.domain.category.*;
+import freitas.abner.expenses.domain.category.dtos.CreateOrUpdateCategoryData;
+import freitas.abner.expenses.domain.category.dtos.DeleteCategoryData;
+import freitas.abner.expenses.domain.category.dtos.ReadCategoryData;
 import freitas.abner.expenses.domain.user.User;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -28,12 +28,12 @@ public class CategoryController {
     @PostMapping
     @Transactional
     ResponseEntity<ReadCategoryData> createCategory(
-            @RequestBody @Valid CreateCategoryData createCategoryData,
+            @RequestBody @Valid CreateOrUpdateCategoryData createOrUpdateCategoryData,
             UriComponentsBuilder uriBuilder
     )
     {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        var category = categoryService.createNewCategory(createCategoryData, user);
+        var category = categoryService.createNewCategory(createOrUpdateCategoryData, user);
         var uri = uriBuilder.path("/categories/{id}").buildAndExpand(category.getId()).toUri();
         return ResponseEntity.created(uri).body(new ReadCategoryData(category));
     }
@@ -53,10 +53,32 @@ public class CategoryController {
     {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var category = categoryService.getCategoryById(id);
-        if (category.getUser() != user) {
-            throw new RuntimeException("You couldn't check another user category.");
+        if (!category.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You couldn't check another user categories.");
         }
         return ResponseEntity.ok(new ReadCategoryData(category));
+    }
+
+    @PutMapping
+    @Transactional
+    ResponseEntity<ReadCategoryData> updateCategory(
+            @RequestBody @Valid CreateOrUpdateCategoryData updateCategoryData
+    )
+    {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var category = categoryService.update(updateCategoryData, user);
+        return ResponseEntity.ok(new ReadCategoryData(category));
+    }
+
+    @DeleteMapping
+    @Transactional
+    ResponseEntity<Void> deleteCategory(
+            @RequestBody @Valid DeleteCategoryData deleteCategoryData
+    )
+    {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        categoryService.delete(deleteCategoryData, user);
+        return ResponseEntity.noContent().build();
     }
 
 }

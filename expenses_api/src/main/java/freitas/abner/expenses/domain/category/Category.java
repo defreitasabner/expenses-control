@@ -1,5 +1,6 @@
 package freitas.abner.expenses.domain.category;
 
+import freitas.abner.expenses.domain.category.dtos.CreateOrUpdateCategoryData;
 import freitas.abner.expenses.domain.user.User;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -17,7 +18,7 @@ public class Category {
 
     public Category() {}
 
-    public Category(CreateCategoryData categoryData, User user) {
+    public Category(CreateOrUpdateCategoryData categoryData, User user) {
         this.name = categoryData.name();
         this.user = user;
     };
@@ -35,5 +36,9 @@ public class Category {
 
     public User getUser() {
         return user;
+    }
+
+    public void update(CreateOrUpdateCategoryData updateCategoryData) {
+        if(updateCategoryData.name() != null) this.name = updateCategoryData.name();
     }
 }

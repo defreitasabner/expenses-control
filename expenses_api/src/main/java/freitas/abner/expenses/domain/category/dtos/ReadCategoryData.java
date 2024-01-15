@@ -1,4 +1,6 @@
-package freitas.abner.expenses.domain.category;
+package freitas.abner.expenses.domain.category.dtos;
+
+import freitas.abner.expenses.domain.category.Category;
 
 public record ReadCategoryData(
         Long id,
